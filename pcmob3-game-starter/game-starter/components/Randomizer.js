@@ -12,23 +12,34 @@ export default function Randomizer({ setVisibility, userInput, setDisabled }) {
   const [winState, setWinState] = useState(false);
 
   useEffect(() => {
-    // set random number here
+    setRandomNo(Math.floor(Math.random() * userInput + userInput));
     setUpperEdge(null);
     setLowerEdge(null);
-    // set initial number of attempts here
+    setAttempts(10);
   }, [userInput]);
 
   useEffect(() => {
-    // if user input = randomNo, or if attempts = 0 and user input = randomNo, player wins
-    // else player loses
+    if (userInput == randomNo) setWinState(true);
+    else setWinState(false);
+    if (attempts == 0 || userInput === randomNo) {
+      setFinalVisibility(true);
+    }
   }, [attempts, randomNo]);
 
   const setGreater = () => {
-    // configure greater number generator
+    setLowerEdge(randomNo);
+    if (upperEdge)
+      setRandomNo(Math.ceil(Math.random() * (upperEdge - randomNo) + randomNo));
+    else setRandomNo(Math.ceil(randomNo + Math.random() * randomNo));
+    setAttempts(attempts - 1);
   };
 
   const setLower = () => {
-    // configure lower number generator
+    setUpperEdge(randomNo);
+    if (lowerEdge)
+      setRandomNo(Math.floor(randomNo - Math.random() * (randomNo - lowerEdge)));
+    else setRandomNo(Math.floor(randomNo - Math.random() * randomNo));
+    setAttempts(attempts - 1);
   };
 
   const backToMainPage = () => {
