@@ -26,7 +26,22 @@ export default function ScoreChecker({
   const addScoreToDb = () => {
     const state = randomNo === userInput;
 
-    // code SQL stuff here
+    db.transaction(tx => {
+      tx.executeSql(
+        "create table if not exists scoreData (id integer primary key not null, guess int, actual int, state text);",
+        []
+      );
+      tx.executeSql(
+        "insert into scoreData (guess, actual, state) values (?, ?, ?)",
+        [randomNo, userInput, userInput === randomNo ? "WON" : "LOST"]
+      );
+      tx.executeSql(
+        "select * from scoreData",
+        [],
+        (_, { rows: { _array } }) => setScores(_array),
+        () => console.log("error fetching")
+      );
+    });
   };
 
   const modalVisibility = () => {
